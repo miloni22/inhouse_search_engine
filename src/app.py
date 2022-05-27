@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, Response, jsonify, request, render_template
 from flask_cors import CORS, cross_origin
 import utils
@@ -75,7 +76,7 @@ def do_search():
   }
 }
 
-@app.route('/test', methods=['GET'])
+@app.route('/search', methods=['GET'])
 def render_srhtml():
     query = request.args.get("q", '')
     print(query, file=sys.stdout)
@@ -119,13 +120,14 @@ def get_file():
             byte2 = int(groups[1])
     # fn = "/home/julian/Workspace/hayes/Search_Engine/Jesslin/videos/"+fn+".mp4"
     fn = "C:/Users/milon/OneDrive/Desktop/Capstone/sample.mp4"
+    print(fn)
     chunk, start, length, file_size = get_chunk(fn,byte1, byte2)
     resp = Response(chunk, 206, mimetype='video/mp4',
                       content_type='video/mp4', direct_passthrough=True)
     resp.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(start, start + length - 1, file_size))
     print(resp.headers)
-    # return render_template('linkResult.html', respon = resp)
-    return resp
+    return render_template('linkResult.html')
+    # return resp
 
 if __name__== '__main__':
     app.run(host='0.0.0.0',debug=True)
