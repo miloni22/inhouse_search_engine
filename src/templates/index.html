@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Autocomplete</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    .container {
+    }
+    .center{
+    position:absolute;
+    height: X px;
+    width: Y px;
+    left:20%;
+    top:20%;
+    margin-top:- X/2 px;
+    margin-left:- Y/2 px;
+}
+  </style>
+</head>
+<body>
+  <div class="container center">
+	  <img class="logo-img" src="http://127.0.0.1:1234/inhouse_large.png"ALIGN=CENTER>
+
+    <h2>Search..</h2>
+    <br>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+              <select id="formoid" type="text" class="js-data-example-ajax form-control">
+	      </select><button id="myButton" class="float-right submit-button" type="submit"i style="align: right;"><i class="fa fa-search"></i></button>
+    
+  </div>
+<script type="text/javascript">
+    document.getElementById("myButton").onclick = function () {
+	console.log($("#formoid").select2('data')[0].text);
+        location.href = "http://127.0.0.1:5000/test?q="+$("#formoid").select2('data')[0].text;
+    };
+</script>
+  <script>
+	  $(document).ready(function() {
+    $('.js-data-example-ajax').select2({
+      ajax: {
+        url: 'http://192.168.0.37:5000/process_search',
+        dataType: 'json',
+	processResults: function (data) {
+      return data;
+    }
+      },
+      templateResult: function(e) { return e.text; },
+      //selectOnClose: true,
+      templateSelection: function(e) { return e.text; },
+      //minimumInputLength:2
+    });
+});
+</script>
+</body>
+</html>

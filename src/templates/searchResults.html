@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head style="width: 100vw;">
+	<title>Google Search</title>
+	<!-- <link rel= "stylesheet" type= "text/css" src= "{{ url_for('static',filename='styles.css') }}"> -->
+	<link rel="stylesheet" type= "text/css" href="/static/styles.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+	<div id="header">
+		<div id="logo-div"> 
+			<img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER>
+		</div>
+
+		<div id="search_bar" style="display:inline-block">
+			<select id="formoid" type="text" name="search" class="js-data-example-ajax"></select>
+		</div>
+		<div id="search-button">
+			<button class="submit-button" type="submit"><i class="fa fa-search"></i></button>
+		</div>
+		
+	</div>
+	<div id="main_body">
+		<div id ="search-options">
+			<div class="option"><p>All</p></div>
+			<div class="option"><p>Images</p></div>
+			<div class="option"><p>Shopping</p></div>
+			<div class="option"><p>News</p></div>
+			<div class="option"><p>Videos</p></div>
+			<div class="option"><p>More</p></div>
+			<div class="option"><p>Search tools</p></div>
+		</div>
+		<div id="result">About 356,000,000 results (0.80 seconds) </div>
+		
+		
+		<div id="content">
+			<div>
+				{% block content %}
+				{% for res, parent_item in search_results.items() %}
+
+				<div class = "search-results">
+					<div class = "title" style=" display:block">
+						<a href="http://127.0.0.1:5000/video?file={{parent_item.File}}">{{ parent_item.Title }} hello</a>
+
+					</div>
+					<div class = "content">
+						<div class="thumbnail">
+							<img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER>
+						</div>
+						<div class="video-transcribed">
+							<p>{{ parent_item.Content }}</p>
+						</div>
+					</div>
+					
+				</div>
+				{% endfor %}
+				{% endblock %}
+			</div>
+			
+		</div>
+	</div>
+	
+	<!-- <div id="page-selector">
+		<p><img src="google-page-selector.png" alt="page selector"></p>
+	</div> -->
+
+
+	<div id="footer">
+		<p id="location">
+			Location - Use precise location - Learn more
+		</p>
+		<p class="footer-options">Help</p>
+		<p class="footer-options">Send feedback</p>
+		<p class="footer-options">Privacy</p>
+		<p class="footer-options">Terms</p>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+	document.getElementById("search-button").onclick = function () {
+		console.log($("#formoid").select2('data')[0].text);
+		location.href = "http://127.0.0.1:5000/test?q="+$("#formoid").select2('data')[0].text;
+	};
+</script>
+<script>
+	$(document).ready(function() {
+		$('.js-data-example-ajax').select2({
+			ajax: {
+				url: 'http://127.0.0.1:5000/process_search',
+				dataType: 'json',
+				processResults: function (data) {
+					return data;
+				}
+			},
+			templateResult: function(e) { return e.text; },
+      		//selectOnClose: true,
+      		templateSelection: function(e) { return e.text; },
+      		//minimumInputLength:2
+  		});
+	});
+</script>
+
+</html>
