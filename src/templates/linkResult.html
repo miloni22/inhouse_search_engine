@@ -5,12 +5,11 @@
 <body>
 
 <p>successfully redirected</p>
-
-    			{% block content %}
-                    {{respon}}
-				{% endblock %}
-    <video width="540" height="310" controls>
-        <source src="static/sample.mp4#t=3,4" type="video/mp4">
+{% block content%}
+    {{data.second}}
+    {{data.filename}}
+    <video width="540" height="310" autoplay controls>
+        <source src="static/sample.mp4#t={{data.second}}" type="video/mp4">
     </video>
-    
+{%endblock%}  
 </body>

@@ -88,46 +88,15 @@ def render_srhtml():
     print(diction, file=sys.stdout)
     return render_template('searchResults.html', search_results = diction)
 
-def get_chunk(full_path,byte1=None, byte2=None):
-    file_size = os.stat(full_path).st_size
-    start = 0
-
-    if byte1 < file_size:
-        start = byte1
-    if byte2:
-        length = byte2 + 1 - byte1
-    else:
-        length = file_size - start
-
-    with open(full_path, 'rb') as f:
-        f.seek(start)
-        chunk = f.read(length)
-    return chunk, start, length, file_size
-
-
 @app.route('/video')
 def get_file():
     range_header = request.headers.get('Range', None)
     fn = request.args.get("file", '')
-    byte1, byte2 = 0, None
-    if range_header:
-        match = re.search('([0-9]+)-([0-9]*)', range_header)
-        groups = match.groups()
-
-        if groups[0]:
-            byte1 = int(groups[0])
-        if groups[1]:
-            byte2 = int(groups[1])
-    # fn = "/home/julian/Workspace/hayes/Search_Engine/Jesslin/videos/"+fn+".mp4"
-    fn = "C:/Users/milon/OneDrive/Desktop/Capstone/sample.mp4"
-    print(fn)
-    chunk, start, length, file_size = get_chunk(fn,byte1, byte2)
-    resp = Response(chunk, 206, mimetype='video/mp4',
-                      content_type='video/mp4', direct_passthrough=True)
-    resp.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(start, start + length - 1, file_size))
-    print(resp.headers)
-    return render_template('linkResult.html')
-    # return resp
+    min = request.args.get("min", '')
+    min = int(min)
+    sec = min*60
+    data = {'filename' : fn, 'second' : sec}
+    return render_template('linkResult.html', data = data)
 
 if __name__== '__main__':
     app.run(host='0.0.0.0',debug=True)
