@@ -12,7 +12,7 @@ body{
 }
 
 
-#search_bar{
+#search-bar{
 	display: inline-box;
 }
 
@@ -102,7 +102,6 @@ body{
 	height: 85px;
 	width: 100%;
 	background-color: #F2F2F2;
-	/* float: bottom; */
 	position: relative;
 	bottom: -75px;
 	padding-top: 20px;
@@ -165,6 +164,3 @@ body{
 button{
 	padding: 1px 6px;
 }
-
-
-

@@ -8,30 +8,81 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
-    .container {
+    .body{	
+      width: 100%;
+	    min-height: 100vh;
+      max-width: 100vw;
+	    overflow-x: hidden;
     }
     .center{
-    position:absolute;
-    height: X px;
-    width: Y px;
-    left:20%;
-    top:20%;
-    margin-top:- X/2 px;
-    margin-left:- Y/2 px;
-}
+      margin-top: 50px;
+    }
+
+    .search-bar{
+      display: inline-block;
+    }
+
+    .search{
+      display: block;
+      width: 1100px;
+    }
+
+    .search-button {
+      display: inline-block;
+      height: 35px;
+      position:relative;
+      top: 16px;
+    }
+
+  #formoid {
+    position: absolute;
+    height: 35px;
+    width: 1000px;
+    left: 126px;
+    top: 9px;
+    font-size: 16px;
+    font-family: Arial;
+  }
+
+  button{
+    padding: 1px 6px;
+  }
+
+  .logo{
+    align-items: center;
+    width: 100%;
+    height: 200px;
+  }
+  .logo-img{
+    height: 100%;
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
   </style>
 </head>
 <body>
   <div class="container center">
-	  <img class="logo-img" src="http://127.0.0.1:1234/inhouse_large.png"ALIGN=CENTER>
 
+    <div class="logo">
+      <img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER>
+    </div>
+	  
     <h2>Search..</h2>
-    <br>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-              <select id="formoid" type="text" class="js-data-example-ajax form-control">
-	      </select><button id="myButton" class="float-right submit-button" type="submit"i style="align: right;"><i class="fa fa-search"></i></button>
-    
+    <div class="search">
+      <div class="search-bar">
+        <select id="formoid" type="text" class="js-data-example-ajax form-control"></select>
+      </div>
+      <div class="search-button">
+        <button id="myButton" class="float-right submit-button" type="submit"i style="align: right;"><i class="fa fa-search"></i></button>
+      </div>
+    </div>
+        
   </div>
 <script type="text/javascript">
     document.getElementById("myButton").onclick = function () {
