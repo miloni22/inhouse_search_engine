@@ -74,7 +74,6 @@ ethical,framework,represent
 important,elements,ai
 ai,strategy
 business,values,informed
-ai
 business,values
 framework,represent,business
 ethical
@@ -84,7 +83,6 @@ development,ai
 responsible,development,ai
 open,source,community
 development,ai,driven
-ai
 open,source,software
 open,source
 ai,driven
@@ -272,7 +270,7 @@ heating
 binary
 binary,digits
 binary,digits,matteson
-computer,scienceplay
+computer,science,play
 gates,simplest
 construct,computer
 crash,course,computer
@@ -312,7 +310,8 @@ tube,heat,exchanger
 register,instruction
 single,chip,instructionsproduced
 example,cpu,instruction
-computer,scienceregisters,memory
+computer,science
+registers,memory
 cpu,instruction
 chip,instructionsproduced
 cpu,example,1971
@@ -794,7 +793,6 @@ responsible,ai,development
 responsible,ai
 framework,responsible,ai
 ai,development
-ai
 requirement,ai
 ai,need
 ai,development,chief

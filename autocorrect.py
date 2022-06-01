@@ -1,0 +1,56 @@
+from functools import lru_cache
+import pandas as pd
+
+def lev_dist(a, b):
+    '''
+    This function will calculate the levenshtein distance between two input
+    strings a and b
+    
+    params:
+        a (String) : The first string you want to compare
+        b (String) : The second string you want to compare
+        
+    returns:
+        This function will return the distnace between string a and b.
+        
+    example:
+        a = 'stamp'
+        b = 'stomp'
+        lev_dist(a,b)
+        >> 1.0
+    '''
+    
+    @lru_cache(None)  # for memorization
+    def min_dist(s1, s2):
+
+        if s1 == len(a) or s2 == len(b):
+            return len(a) - s1 + len(b) - s2
+
+        # no change required
+        if a[s1] == b[s2]:
+            return min_dist(s1 + 1, s2 + 1)
+
+        return 1 + min(
+            min_dist(s1, s2 + 1),      # insert character
+            min_dist(s1 + 1, s2),      # delete character
+            min_dist(s1 + 1, s2 + 1),  # replace character
+        )
+
+    return min_dist(0, 0)
+
+df = pd.read_csv('trie_keywords.csv')
+df.fillna('', inplace=True)
+keywords =[' '.join(filter(None,x)) for x in df.values.tolist()]
+
+def ac(query):
+    s,d={},1000
+    c = len(query)/2
+    for w in keywords:
+        t=lev_dist(query,w)
+        if(t<c):
+            s[t]=w
+    if(s):
+        s=[j for i,j in {k: v for k, v in sorted(s.items(),reverse=True, key=lambda item: item[1])}.items()][::-1]
+        print(s)
+        return {'ac':s}
+    return {}

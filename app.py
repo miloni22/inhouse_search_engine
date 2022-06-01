@@ -4,6 +4,7 @@ import sys
 from flask import Flask, jsonify, request, Response, render_template
 from flask_cors import CORS, cross_origin
 import utils
+import autocorrect
 import time
 import re
 from cmath import isnan
@@ -17,6 +18,7 @@ from nltk.tokenize import word_tokenize
 import inflect
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+import vid_summarizer as vs
 
 p = inflect.engine()
 lemmatizer = WordNetLemmatizer()
@@ -247,8 +249,14 @@ def query_search(query,videos):
         relevantVideos= [v for v in videos if not isnan(v.similarityScore)]
 
         sortedResult = sorted(relevantVideos, key = lambda x: x.similarityScore, reverse = True)
+        seen_titles = set()
+        new_list= [] 
+        for obj in sortedResult:
+            if obj.docName not in seen_titles:
+                new_list.append(obj)
+                seen_titles.add(obj.docName)
         res={}
-        for idx,video in enumerate(sortedResult[:10]):
+        for idx,video in enumerate(new_list[:10]):
             res[idx] = video.toDict()
             video.myfunc()
         return res
@@ -262,8 +270,10 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def gen_search_json():
     start_time = time.time()
     query = request.args.get("q", '')
-    query = utils.process_term(query)
-    results = utils.get_results(query.strip())
+    q = utils.process_term(query)
+    results = utils.get_results(q.strip())
+    if(not results):
+        results =  [{'id':0,'text':query}]
     resp = jsonify(results=results[:10])  # top 10 results
     resp.headers['Access-Control-Allow-Origin'] = '*'
     end_time = time.time()
@@ -281,12 +291,15 @@ def render_srhtml():
     # print(query)
     print(query, file=sys.stdout)
     url = "http://0.0.0.0:5000/do_search?q="+query
+    url = url.replace(" ","%20")
     response = urllib.request.urlopen(url)
     data = response.read()
+    #autocorrect
+    ac = autocorrect.ac(query)
     # diction = data
     diction = json.loads(data)
     print(diction, file=sys.stdout)
-    return render_template('searchResults.html', search_results = diction)
+    return render_template('searchResults.html', search_results = diction, autocorrect=ac)
     
     
 
@@ -312,7 +325,13 @@ def get_file():
     sec = min*60
     data = {'filename' : fn, 'second' : sec}
     return render_template('linkResult.html', data = data)
-    
+
+@app.route('/vid_summary')
+def vid_summary():
+    fn = request.args.get("file", '')
+    res = vs.generate_summary_modified("./static/Data/text/"+fn+".txt")
+    print(res)
+    return res
 @app.route('/text')
 def serveResult():
     fn = request.args.get("file", '')

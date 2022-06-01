@@ -12,10 +12,10 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
-<body>
+<body style="background-color: #faf4de;">
 	<div id="header">
 		<div id="logo-div"> 
-			<img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER>
+			<a href = http://0.0.0.0:5000/home><img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER></a>
 		</div>
 
 		<div id="search-bar" style="display:inline-block">
@@ -36,9 +36,18 @@
 			<div class="option"><p>More</p></div>
 			<div class="option"><p>Search tools</p></div>
 		</div>
-		<div id="result">About 356,000,000 results (0.80 seconds) </div>
-		
-		
+		<div id="result">About 356,000,000 results (0.80 seconds) 
+		{% block autocorrect %}
+	        {% if autocorrect.ac%}	
+			<div class="content">
+				Search instead for? : 
+				{% for word in autocorrect.ac%}
+				<a href="http://0.0.0.0:5000/search?q={{word}}"> {{word}}</a>
+				{% endfor %}
+			</div>
+		{% endif %}
+		{% endblock %}
+		</div>
 		<div id="content">
 			<div>
 				{% block content %}
@@ -46,12 +55,25 @@
 
 				<div class = "search-results">
 					<div class = "title" style=" display:block">
-						<a href="http://0.0.0.0:5000/video?file={{parent_item.File}}&min={{parent_item.Minute}}">{{ parent_item.Title }} </a>
+						<a href="http://127.0.0.1:5000/video?file={{parent_item.File}}&min={{parent_item.Minute}}">{{ parent_item.Title }} </a>
 
 					</div>
 					<div class = "content">
 						<div class="thumbnail">
-							<img class="logo-img" src=static/Data/videos/{{parent_item.File}}.mp4.jpg ALIGN=CENTER>
+							<video src=static/Data/videos/{{parent_item.File}}.mp4#t=10  type="video/mp4" muted class="vid{{res}} logo-img" ALIGN=CENTER loop >
+                                                                </video>
+
+                                                                                        <script>
+                                                                                                let clip{{res}} = document.querySelector(".vid{{res}}")
+                                                                                                clip{{res}}.addEventListener("mouseover", function (e) {
+                                                                                                        clip{{res}}.play();
+                                                                                                })
+
+                                                                                                clip{{res}}.addEventListener("mouseout", function (e) {
+                                                                                                clip{{res}}.pause();
+                                                                                                })
+                                                                                            </script>
+
 						</div>
 						<div class="video-transcribed">
 							<p>{{ parent_item.Content }}</p>
@@ -86,14 +108,14 @@
 <script type="text/javascript">
 	document.getElementById("search-button").onclick = function () {
 		console.log($("#formoid").select2('data')[0].text);
-		location.href = "http://0.0.0.0:5000/test?q="+$("#formoid").select2('data')[0].text;
+		location.href = "http://127.0.0.1:5000/search?q="+$("#formoid").select2('data')[0].text;
 	};
 </script>
 <script>
 	$(document).ready(function() {
 		$('.js-data-example-ajax').select2({
 			ajax: {
-				url: 'http://127.0.0.1:5000/process_search',
+				url: 'http://0.0.0.0:5000/process_search',
 				dataType: 'json',
 				processResults: function (data) {
 					return data;
