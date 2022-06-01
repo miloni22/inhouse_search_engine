@@ -15,7 +15,7 @@
 <body style="background-color: #faf4de;">
 	<div id="header">
 		<div id="logo-div"> 
-			<a href = http://0.0.0.0:5000/home><img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER></a>
+			<a href = http://127.0.0.1:5000/home><img class="logo-img" src="static/inhouse_large.png"ALIGN=CENTER></a>
 		</div>
 
 		<div id="search-bar" style="display:inline-block">
@@ -28,21 +28,21 @@
 	</div>
 	<div id="main_body">
 		<div id ="search-options">
-			<div class="option"><p>All</p></div>
-			<div class="option"><p>Images</p></div>
-			<div class="option"><p>Shopping</p></div>
-			<div class="option"><p>News</p></div>
-			<div class="option"><p>Videos</p></div>
-			<div class="option"><p>More</p></div>
-			<div class="option"><p>Search tools</p></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>All</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>Images</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>Shopping</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>News</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>Videos</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>More</p></a></div>
+			<div class="option"><a href="http://127.0.0.1:5000/home"><p>Search tools</p></a></div>
 		</div>
-		<div id="result">About 356,000,000 results (0.80 seconds) 
+		<div id="result">About {{count}} results (0.80 seconds) 
 		{% block autocorrect %}
 	        {% if autocorrect.ac%}	
 			<div class="content">
 				Search instead for? : 
 				{% for word in autocorrect.ac%}
-				<a href="http://0.0.0.0:5000/search?q={{word}}"> {{word}}</a>
+				<a href="http://127.0.0.1:5000/search?q={{word}}"> {{word}}</a>
 				{% endfor %}
 			</div>
 		{% endif %}
@@ -115,7 +115,7 @@
 	$(document).ready(function() {
 		$('.js-data-example-ajax').select2({
 			ajax: {
-				url: 'http://0.0.0.0:5000/process_search',
+				url: 'http://127.0.0.1:5000/process_search',
 				dataType: 'json',
 				processResults: function (data) {
 					return data;

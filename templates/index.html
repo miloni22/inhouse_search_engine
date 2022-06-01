@@ -87,14 +87,14 @@
 <script type="text/javascript">
     document.getElementById("myButton").onclick = function () {
 	console.log($("#formoid").select2('data')[0].text);
-        location.href = "http://0.0.0.0:5000/search?q="+$("#formoid").select2('data')[0].text;
+        location.href = "http://127.0.0.1:5000/search?q="+$("#formoid").select2('data')[0].text;
     };
 </script>
   <script>
 	  $(document).ready(function() {
     $('.js-data-example-ajax').select2({
       ajax: {
-        url: 'http://0.0.0.0:5000/process_search',
+        url: 'http://127.0.0.1:5000/process_search',
         dataType: 'json',
 	processResults: function (data) {
       return data;

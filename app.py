@@ -43,7 +43,7 @@ class seDoc:
 # Folder Path
 #path = "C:\\Users\\muth\\InHouseEngine\\In-House-Search-Engine\\video-text\\video-captions"
 cwd=os.getcwd()
-captions_path= cwd+"/static/Data/text"
+captions_path= cwd+"\\static\\Data\\text"
 #Array of vidoes, type seDoc
 videos = []  
 
@@ -290,7 +290,7 @@ def render_srhtml():
     query = request.args.get("q", '').lower()
     # print(query)
     print(query, file=sys.stdout)
-    url = "http://0.0.0.0:5000/do_search?q="+query
+    url = "http://127.0.0.1:5000/do_search?q="+query
     url = url.replace(" ","%20")
     response = urllib.request.urlopen(url)
     data = response.read()
@@ -298,10 +298,9 @@ def render_srhtml():
     ac = autocorrect.ac(query)
     # diction = data
     diction = json.loads(data)
+    cn = len(diction)
     print(diction, file=sys.stdout)
-    return render_template('searchResults.html', search_results = diction, autocorrect=ac)
-    
-    
+    return render_template('searchResults.html', search_results = diction, autocorrect=ac, count=cn)
 
 @app.route('/video2')
 def get_file2():
@@ -323,20 +322,24 @@ def get_file():
     min = request.args.get("min", '')
     min = int(min)
     sec = min*60
-    data = {'filename' : fn, 'second' : sec}
+    vid_sum = vid_summary(fn)
+    data = {'filename' : fn, 'second' : sec, 'vid_sum' : vid_sum}
+    print(data)
     return render_template('linkResult.html', data = data)
 
-@app.route('/vid_summary')
-def vid_summary():
-    fn = request.args.get("file", '')
-    res = vs.generate_summary_modified("./static/Data/text/"+fn+".txt")
-    print(res)
+# @app.route('/vid_summary')
+def vid_summary(filename):
+    # fn = request.args.get("file", '')
+    res = vs.generate_summary_modified(".\\static\\Data\\text\\"+filename+".txt")
+    # print(res)
     return res
+
+
 @app.route('/text')
 def serveResult():
     fn = request.args.get("file", '')
     s=""
-    with open("./static/Data/text/"+fn+".txt", "r") as f:
+    with open(".\\static\\Data\\text\\"+fn+".txt", "r") as f:
         for line in f:
             if line ==  '':
                  break
@@ -349,7 +352,7 @@ def serveResult():
 @app.route('/thumbnail')
 def serveThumbnail():
     fn = request.args.get("file", '')
-    fn = "./static/Data/videos/"+fn+".jpg"
+    fn = ".\\static\\Data\\videos\\"+fn+".jpg"
     return send_file(filename, mimetype='image/gif')
     
 @app.route('/do_search')
@@ -359,4 +362,4 @@ def do_search():
     return query_search(query,videos)
 
 if __name__== '__main__':
-    app.run(host='0.0.0.0',port=5000,debug=True)
+    app.run(host='127.0.0.1',port=5000,debug=True)
