@@ -13,7 +13,7 @@
 
 </head>
 <body style="background-color: #faf4de;">
-	{% with tab = "All" %}
+	{% with tab = "Text" %}
 		{% include 'header.html' %}
 	{%endwith%}
 	<div id="main_body">
@@ -35,47 +35,20 @@
 				{% for res, parent_item in search_results.items() %}
 
 				<div class = "search-results">
-					{% if 'video' in parent_item.Type %}
-					<div class = "title" style=" display:block">
-						<a href="http://127.0.0.1:5000/video?file={{parent_item.File}}&min={{parent_item.Minute}}">{{ parent_item.Title }} </a>
-
-					</div>
-					<div class = "content">
-						<div class="thumbnail">
-							<video src=static/Data/videos/{{parent_item.File}}.mp4#t=10  type="video/mp4" muted class="vid{{res}} logo-img" ALIGN=CENTER loop >
-                                                                </video>
-
-                                                                                        <script>
-                                                                                                let clip{{res}} = document.querySelector(".vid{{res}}")
-                                                                                                clip{{res}}.addEventListener("mouseover", function (e) {
-                                                                                                        clip{{res}}.play();
-                                                                                                })
-
-                                                                                                clip{{res}}.addEventListener("mouseout", function (e) {
-                                                                                                clip{{res}}.pause();
-                                                                                                })
-                                                                                            </script>
-
-						</div>
-						<div class="video-transcribed">
-							<p>{{ parent_item.Content }}</p>
-						</div>
-					</div>
-					{% else %}
 						<div class = "title" style=" display:block">
 							<a href="http://127.0.0.1:5000/article?file={{parent_item.File}}&min={{parent_item.Minute}}">{{ parent_item.Title }} </a>
 						</div>
 						<div class="article snippet">
 							<p>{{ parent_item.Content }}</p>
-						</div>
-					{% endif %}					
+						</div>			
 				</div>
 				{% endfor %}
 				{% endblock %}
 			</div>
+			
 		</div>
-		{% include 'footer.html' %}
 	</div>
+	{% include 'footer.html' %}
 </body>
 
 <script type="text/javascript">

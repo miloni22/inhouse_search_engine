@@ -19,27 +19,31 @@ import inflect
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 import vid_summarizer as vs
+from nltk.tokenize.punkt import PunktSentenceTokenizer
+from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 
 p = inflect.engine()
 lemmatizer = WordNetLemmatizer()
 
 #Class to hold video and key moment information
 class seDoc:
-    def __init__(self, docName, line, content, similarityScore):
+    def __init__(self, docName, line, content, similarityScore, resultType):
         self.docName = docName
         self.line = line
         self.content = content
         self.similarityScore = similarityScore
+        self.resultType = resultType
 
     def myfunc(self):
         print("Video: \n" + self.docName)
         print("Minute: \n" + str(self.line))
         print("Content: \n" + self.content)
         print("SimilarityScore: \n" + str(self.similarityScore))
+        print("Result Type: \n" + self.resultType )
     def toDict(self):
-        print ({"File":self.docName.split("/")[-1].split(".")[0], "Title": self.docName.split("/")[-1].split(".")[0].replace("_"," "),"Content":self.content,"Minute":self.line,"Score":self.similarityScore})
-        return {"File":self.docName.split("/")[-1].split(".")[0], "Title": self.docName.split("/")[-1].split(".")[0].replace("_"," "),"Content":self.content,"Minute":self.line,"Score":self.similarityScore}
-
+        print ({"File":self.docName.split("/")[-1].split(".")[0], "Title": self.docName.split("/")[-1].split(".")[0].replace("_"," "),"Content":self.content,"Minute":self.line,"Score":self.similarityScore, "Type":self.resultType})
+        return {"File":self.docName.split("/")[-1].split(".")[0], "Title": self.docName.split("/")[-1].split(".")[0].replace("_"," "),"Content":self.content,"Minute":self.line,"Score":self.similarityScore, "Type":self.resultType}
+        
 # Folder Path
 #path = "C:\\Users\\muth\\InHouseEngine\\In-House-Search-Engine\\video-text\\video-captions"
 cwd=os.getcwd()
@@ -52,20 +56,30 @@ os.chdir(captions_path)
 
 
 # Read text File
-def read_text_file(file_path):
+def read_text_file(file_path, type):
     i = 0
-    with open(file_path, 'r') as f:
-        while True:
-            print  (file_path)
-            line = f.readline()
-            #eof
-            if line ==  '':
-                break
-            #line contains key moment info (eg: "0:")
-            if line.__contains__(':'):
-                continue
-            videos.append(seDoc(file_path, i, remove_stopwords(line.strip()), 0))
-            i += 1
+    if type == 'video':
+        with open(file_path, 'r', errors='ignore') as f:
+            while True:
+                line = f.readline()
+                #eof
+                if line ==  '':
+                    break
+                #line contains key moment info (eg: "0:")
+                if line.__contains__(':'):
+                    continue
+                videos.append(seDoc(file_path, i, remove_stopwords(line.strip()), 0, type))
+                i += 1
+    else:
+        i = 0
+        with open(file_path, 'r', errors='ignore') as f:
+            line = f.read()
+            sentence_tokenizer = PunktSentenceTokenizer()
+            sentences = sentence_tokenizer.tokenize(line.strip())
+
+            for sentence in sentences:
+                videos.append(seDoc(file_path, i, remove_stopwords(sentence.strip()), 0, type))
+                i+=1
 
 # remove stopwords function, convert numbers to numbers in words, lemmetize
 def remove_stopwords(text):
@@ -76,8 +90,11 @@ def remove_stopwords(text):
         if(w not in stop_words):
             if w.isdigit():
                 w = p.number_to_words(w)
-            w = lemmatizer.lemmatize(w, pos ='v')
-            filtered_text.append(w)
+            if w.isalpha():
+                w = lemmatizer.lemmatize(w, pos ='v')
+                filtered_text.append(w)
+            else:
+                continue
     #filtered_text = [word for word in word_tokens if word not in stop_words]
     return ' '.join(filtered_text)
 
@@ -89,9 +106,25 @@ for file in os.listdir():
         file_path = f"{captions_path}/{file}"
   
         # call read text file function
-        read_text_file(file_path)
+        read_text_file(file_path,'video')
 
 #Correcting path
+os.chdir(cwd)
+
+cwd = os.getcwd()
+articles_path= os.getcwd() + '/static/Data/articles'
+#Array of vidoes, type seDoc
+# Change the directory
+os.chdir(articles_path)
+
+for file in os.listdir():
+    # Check whether file is in text format or not
+    if file.endswith(".txt"):
+        file_path = f"{articles_path}/{file}"
+  
+        # call read text file function
+        read_text_file(file_path, 'article')
+
 os.chdir(cwd)
 
 # tf-idf score across all docs for the query string
@@ -300,7 +333,7 @@ def render_srhtml():
     diction = json.loads(data)
     cn = len(diction)
     print(diction, file=sys.stdout)
-    return render_template('searchResults.html', search_results = diction, autocorrect=ac, count=cn)
+    return render_template('searchResults.html', search_results = diction, autocorrect=ac, count=cn, query=query)
 
 @app.route('/video2')
 def get_file2():
@@ -325,7 +358,24 @@ def get_file():
     vid_sum = vid_summary(fn)
     data = {'filename' : fn, 'second' : sec, 'vid_sum' : vid_sum}
     print(data)
-    return render_template('linkResult.html', data = data)
+    return render_template('linkVideoResult.html', data = data)
+
+@app.route('/article')
+def get_article():
+    print(os.getcwd())
+    range_header = request.headers.get('Range', None)
+    fn = request.args.get("file", '')
+    min = request.args.get("min", '')
+    result={}
+    with open("static/Data/articles/"+fn+".txt", 'r') as f: 
+        idx = 0
+        sentence_tokenizer = PunktSentenceTokenizer()
+        sentences = sentence_tokenizer.tokenize(f.read())
+        for sentence in sentences:
+            result[idx] = sentence
+            idx+=1
+    data = {'result' : result, 'idx' : min}
+    return render_template('linkTextResults.html', data = data)
 
 # @app.route('/vid_summary')
 def vid_summary(filename):
@@ -360,6 +410,52 @@ def do_search():
     query = request.args.get("q", '')
     print(query)
     return query_search(query,videos)
+
+@app.route('/searchResultVideo', methods=['GET'])
+def render_srvideohtml():
+    query = request.args.get("q", '').lower()
+    # print(query)
+    print(query, file=sys.stdout)
+    url = "http://127.0.0.1:5000/do_search?q="+query
+    url = url.replace(" ","%20")
+    response = urllib.request.urlopen(url)
+    data = response.read()
+    #autocorrect
+    ac = autocorrect.ac(query)
+    # diction = data
+    diction = json.loads(data)
+    dict = {}
+    counter = 0
+    for key, value in diction.items():
+        if(diction.get(key).get("Type") == "video"):
+            dict[counter] = value
+            counter+=1
+    cn = len(diction)
+    print(diction, file=sys.stdout)
+    return render_template('searchResultsVideo.html', search_results = dict, autocorrect=ac, count=counter, query=query)
+
+@app.route('/searchResultText', methods=['GET'])
+def render_srarticlehtml():
+    query = request.args.get("q", '').lower()
+    # print(query)
+    print(query, file=sys.stdout)
+    url = "http://127.0.0.1:5000/do_search?q="+query
+    url = url.replace(" ","%20")
+    response = urllib.request.urlopen(url)
+    data = response.read()
+    #autocorrect
+    ac = autocorrect.ac(query)
+    # diction = data
+    diction = json.loads(data)
+    dict = {}
+    counter = 0
+    for key, value in diction.items():
+        if(diction.get(key).get("Type") == "article"):
+            dict[counter] = value
+            counter+=1
+    cn = len(diction)
+    print(diction, file=sys.stdout)
+    return render_template('searchResultsText.html', search_results = dict, autocorrect=ac, count=counter, query=query)
 
 if __name__== '__main__':
     app.run(host='127.0.0.1',port=5000,debug=True)

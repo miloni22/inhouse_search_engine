@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head style="width: 100vw;">
+    <title>Google Search</title>
+	<link rel="stylesheet" type= "text/css" href="/static/styles.css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body style="background-color: #faf4de;">
+	{% include 'searchBar.html' %}
+    <div id="main_body">
+        <div id="textarea">
+            {% for min, para in data.result.items() %}
+                {% set idx = data.idx %}
+                {% set minute = "% s" %min %}
+                <!-- {% if "a" in "a" %}
+                    
+                    <div class="highlighted_para">{{para}}</div>
+                {% endif %} -->
+                {% if minute in idx %}
+                    <div class="highlighted_para">{{para}}</div>
+                {% else %}
+                    <div class="para">{{para}}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+	{% include 'footer.html' %}
+</body>
+<script type="text/javascript">
+	document.getElementById("search-button").onclick = function () {
+		console.log($("#formoid").select2('data')[0].text);
+		location.href = "http://127.0.0.1:5000/search?q="+$("#formoid").select2('data')[0].text;
+	};
+</script>
+<script>
+	$(document).ready(function() {
+		$('.js-data-example-ajax').select2({
+			ajax: {
+				url: 'http://127.0.0.1:5000/process_search',
+				dataType: 'json',
+				processResults: function (data) {
+					return data;
+				}
+			},
+			templateResult: function(e) { return e.text; },
+      		//selectOnClose: true,
+      		templateSelection: function(e) { return e.text; },
+      		//minimumInputLength:2
+  		});
+	});
+</script>
