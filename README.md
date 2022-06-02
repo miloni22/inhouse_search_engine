@@ -8,7 +8,9 @@ Transcription - CMU Pocketsphinx<br />
 Video Summarization/Indexing - By identifying rarity of text with NLP<br />
 
 ## Installation and Setup.
-Download 'Data.zip' folder and unzip 
-To run the project:
-'''python3 app.py'''
+Download 'Data.zip' folder and unzip <br />
+To run the project:<br />
+```
+python3 app.py
+```
 
