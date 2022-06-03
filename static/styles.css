@@ -249,7 +249,7 @@ th, td{
 
 
 
-ul {
+.list {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -259,11 +259,11 @@ ul {
 	background-color: #a88672;
   }
   
-  li {
+  .list_items {
 	float: left;
   }
   
-  li a {
+  .list_items a {
 	display: block;
 	/* color: white; */
 	color: #666;

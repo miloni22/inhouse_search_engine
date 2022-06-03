@@ -1,22 +1,22 @@
 {% include 'searchBar.html' %}
 <div id ="search-options">
-    <ul>
+    <ul class = "list">
     {% if tab=="All" %}
-        <li id="first_search"><a href="http://127.0.0.1:5000/search?q={{query}}"><div class="option bold">All</div></a></li>
+        <li id="first_search" class="list_items"><a href="http://127.0.0.1:5000/search?q={{query}}"><div class="option bold">All</div></a></li>
     {%else%}
-        <li id="first_search"><a href="http://127.0.0.1:5000/search?q={{query}}"><div class="option">All</div></a></li>
+        <li id="first_search" class="list_items"><a href="http://127.0.0.1:5000/search?q={{query}}"><div class="option">All</div></a></li>
     {%endif%}
     
     {% if tab=="Videos" %}
-        <li><a href="http://127.0.0.1:5000/searchResultVideo?q={{query}}"><div class="option bold">Videos</div></a></li>
+        <li class="list_items"><a href="http://127.0.0.1:5000/searchResultVideo?q={{query}}"><div class="option bold">Videos</div></a></li>
     {%else%}
-        <li><a href="http://127.0.0.1:5000/searchResultVideo?q={{query}}"><div class="option">Videos</div></a></li>
+        <li class="list_items"><a href="http://127.0.0.1:5000/searchResultVideo?q={{query}}"><div class="option">Videos</div></a></li>
     {%endif%}
     
     {% if tab=="Text" %}
-        <li><a href="http://127.0.0.1:5000/searchResultText?q={{query}}"><div class="option bold">Articles</div></a></li>
+        <li class="list_items"><a href="http://127.0.0.1:5000/searchResultText?q={{query}}"><div class="option bold">Articles</div></a></li>
     {%else%}
-        <li><a href="http://127.0.0.1:5000/searchResultText?q={{query}}"><div class="option">Articles</div></a></li>
+        <li class="list_items"><a href="http://127.0.0.1:5000/searchResultText?q={{query}}"><div class="option">Articles</div></a></li>
     {%endif%}
     </ul>
 </div>
